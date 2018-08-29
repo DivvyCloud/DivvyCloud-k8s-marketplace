@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
 
 spec:
-  replicas: {{ if .Values.harvester  }}  {{ .Values.harvester.replicaCount | default 2 }} {{ else }} 2 {{ end }}
+  replicas: {{ if .Values.replicaCounts.harvester}}  {{ .Values.replicaCounts.harvester | default 2 }} {{ else }} 2 {{ end }}
   selector:
     matchLabels:
       app: {{ template "divvycloud.name" . }}-harvester
@@ -31,7 +31,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
-      nodeSelector:
+      nodeSelector::{{ .Values.image}}
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.affinity }}

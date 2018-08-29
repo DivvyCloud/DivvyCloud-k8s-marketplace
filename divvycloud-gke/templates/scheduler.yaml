@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ if .Values.scheduler  }}  {{ .Values.scheduler.replicaCount | default 2 }} {{ else }} 2 {{ end }}
+  replicas: {{ if .Values.replicaCounts.scheduler  }}  {{ .Values.replicaCounts.scheduler | default 2 }} {{ else }} 2 {{ end }}
   selector:
     matchLabels:
       app: {{ template "divvycloud.name" . }}-scheduler

@@ -37,25 +37,31 @@ spec:
     - description: Getting Started
       url: https://github.com/DivvyCloud/DivvyCloud-k8s-marketplace
     notes: |-
-      # Expose DivvyCloud service
+      # Access the DivvyCloud service
 
-      By default, the application listens on port 8001. 
-      The external IP of the DivvyCloud site service and visit
-      the URL printed below in your browser.
+      To access DivvyCloud use kubectl port-forward:
 
       ```
-      SERVICE_IP=$(kubectl get \
-        --namespace {{ .Release.Namespace }} \
-        svc {{ template "divvycloud.name" . }}-interfaceserver \
-        -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
-      echo "http://${SERVICE_IP}:8001"
+      kubectl port-forward svc {{ template "divvycloud.name" . }}-interfaceserver 8001
       ```
+
+      You can now connect to DivvyCloud by going to http://localhost:8001
 
       # Setting up admin user
-
       Once the software is deployed please goto the above ip address in a browser and configure
       your admin account
+
+      # Exposing the DivvyCloud service 
+      If you would like to access DivvyCloud without having to use the kubectl port-forward command
+      you can associate a public IP address by creating a new service type:
+
+      ```
+      kubectl expose svc {{ template "divvycloud.name" . }}-interfaceserver \
+       --name={{ template "divvycloud.name" . }}-load-balancer \
+       --port=80 --target-port=8001 --type=LoadBalancer
+      ```
+
+
   info:
   - name: MySQL root password
     type: Reference

@@ -5,28 +5,18 @@
 imageName: gcr.io/cloud-marketplace/divvycloud-public/divvycloud-enterprise
 pullPolicy: IfNotPresent
 
-harvesters:
-  replicaCount: 2
+replicaCounts:
+  harvester: 2
+  interfaceserver: 2
+  scheduler: 2
+  processor: 2
+  longharvester: 2
+  ondemand: 2
 
-interfaceserver:
-  replicaCount: 2
-
-scheduler:
-  replicaCount: 2
-
-processor:
-  replicaCount: 2
-
-longharvester:
-  replicaCount: 1
-
-ondemand:
-  replicaCount: 2
 
 service:
   type: ClusterIP
   port: 80
-
 
 ingress:
   enabled: true
@@ -39,8 +29,35 @@ ingress:
   hosts:
     - crosskube.divvycloud.io
 
-storage:
-  size: 30Gi
+# External database configuration
+# The main database stores all the information about your clouds
+database:
+  dbName: divvy
+#  host: your.database.fqdn.or.ip
+#  port: 3306
+#  user: divvy
+#  password:  divvy
+
+# The secure database can be on a seperate system (if desired) and stores encyption keys
+secureDatabase:
+  dbName: divvykeys
+#  host: your.database.fqdn.or.ip
+#  port: 3306
+#  user: divvy
+#  password:  divvy
+
+
+
+
+
+
+ 
+
+
+## If Storage is enabled, then we will create a PVC using your default storage class
+## Uncomment the storage section to enable MySQL data persistance
+#storage:
+# size: 30Gi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
