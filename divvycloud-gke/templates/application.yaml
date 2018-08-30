@@ -42,7 +42,7 @@ spec:
       To access DivvyCloud use kubectl port-forward:
 
       ```
-      kubectl port-forward svc {{ template "divvycloud.name" . }}-interfaceserver 8001
+      kubectl port-forward svc/{{ template "divvycloud.name" . }}-interfaceserver 8001
       ```
 
       You can now connect to DivvyCloud by going to http://localhost:8001

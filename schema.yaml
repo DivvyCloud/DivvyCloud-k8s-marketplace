@@ -14,9 +14,6 @@ properties:
     x-google-marketplace:
       type: IMAGE
 
-
-
-
 required:
 - name
 - namespace
