@@ -99,6 +99,43 @@ kubectl port-forward svc/divvycloud-interfaceserver 8001
 
 Next open http://localhost:8001/ in your web browser
 
+## Exposing DivvyCloud using a GCP internal load balancer
+
+In order to expose DivvyCloud using an internal load balancer. 
+
+First we need to change our divvycloud-interfaceserver to a NodePort instead of a ClusterIP. 
+
+To patch your existing divvycloud-interfaceserver service run the following commands:
+```
+kubectl patch svc divvycloud-interfaceserver --type='json' -p '[{"op":"replace","path":"/spec/type","value":"NodePort"}]'
+```
+
+Next we need to create a new load balancer service. This load balancer will use an annotation to tell GCP to create a new internal load balancer.
+
+First copy the following to a yml file. In this example we will call the file internal-lb.yaml:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+  name: divvycloud-internal-lb
+  labels:
+    app: divvycloud-internal-lb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8001
+  selector:
+    app:  divvycloud-interfaceserver
+```
+
+Next create the above service by running :
+```
+kubectl create -f internal-lb.yaml
+```
+
 ## Backup / Restore
 
 MySQL dump and the MySQL client are used to backlup and restore a DivvyCloud database
