@@ -249,11 +249,17 @@ type: Opaque
 
 Other variables (MYSQL_DATABASE,MYSQL_PASSWORD,MYSQL_ROOT_PASSWORD,MYSQL_USER) are only used when running MySQL in a container.
 
+### Restart all DivvyCloud containers
 
-
+Next we will scale down and scale up all the DivvyCloud containers. 
   
+```
+kubectl get deployments | grep -i divvycloud | grep -v mysql | grep -v redis  | cut -d ' ' -f1  | xargs -n 1 kubectl scale --replicas=0 deployment
+kubectl get deployments | grep -i divvycloud | grep -v mysql | grep -v redis  | cut -d ' ' -f1  | xargs -n 1 kubectl scale --replicas=2 deployment
+```
 
-### Setting up 
+Once are back online, the migration is complete. 
+
 
 ## Upgrades
 
