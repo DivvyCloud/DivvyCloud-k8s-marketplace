@@ -241,19 +241,13 @@ type: Opaque
 ```
 
 
-| Field                 | Description                        |
--------------------------------------------------------------
-| DIVVY_MYSQL_HOST      | Host / IP address of Db hosting the divvy schema            |
-| DIVVY_MYSQL_USER      | MySQL User for the 'divvy' schema  |
-| DIVVY_MYSQL_PASSWORD  | Password for DIVVY_MYSQL_USER      |
-| DIVVY_SECURE_MYSQL_HOST | Host / IP Address of Db hosting the divvykeys schema |
-| DIVVY_SECURE_MYSQL_USER | MySQL User for the 'divvykeys' schema |
-| DIVVY_SECURE_MYSQL_PASSWORD | Password for DIVVY_SECURE_MYSQL_USER |
-| MYSQL_DATABASE          | Not Applicable for remote Db        |
-| MYSQL_ROOT_USER         | Not Applicable for remote Db        |
-| MYSQL_ROOT_PASSWORD     | Not Applicable for remote Db        | 
-| MYSQL_USER              | Not Applicable for remote Db        | 
+- DIVVY_MYSQL_USER              --- MySQL User for the 'divvy' schema  
+- DIVVY_MYSQL_PASSWORD          --- Password for DIVVY_MYSQL_USER      
+- DIVVY_SECURE_MYSQL_HOST       --- Host / IP Address of Db hosting the divvykeys schema 
+- DIVVY_SECURE_MYSQL_USER       --- MySQL User for the 'divvykeys' schema 
+- DIVVY_SECURE_MYSQL_PASSWORD   --- Password for DIVVY_SECURE_MYSQL_USER 
 
+Other variables (MYSQL_DATABASE,MYSQL_PASSWORD,MYSQL_ROOT_PASSWORD,MYSQL_USER) are only used when running MySQL in a container.
 
 
 
