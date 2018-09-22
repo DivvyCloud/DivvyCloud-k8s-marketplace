@@ -168,6 +168,108 @@ mysql -u [MYSQL_USER] -p -h [MYSQL_IP] divvy < divvy.sql
 mysql -u [MYSQL_USER] -p -h [MYSQL_IP] divvykeys < divvykeys.sql
 ```
 
+
+## Moving to dedicated MySQL Server
+When running in production, we highly recommend moving off of the mysql container deployed as a part of the helm chart, and to a more production ready MySQL instance (CloudSQL, RDS, Dedicated MySQL instance, etc..). Below are the steps on how to migrate to a production MySQL instance. 
+
+### Backup MySQL DB.
+    Please follow the above steps for backing up the existing cotainerized MySQL database and restore it to the backup to you production database 
+
+### Restore DB to production DB Server
+
+#### Prepare new database
+    Before restoring the backup, we need to create two database schema(s) for DivvyCloud to use. The two schems annotations:    
+    - divvy  
+    - divvykeys
+
+    To create the schemas, run can use the following commands via the MySQL Console 
+
+    ``` 
+    CREATE DATABASE divvy;
+    CREATE DATABASE divvykeys;
+    GRANT ALL PRIVILEGES on divvy.* to 'divvy'@'<DivvyCloud.ip.range.here>' IDENTIFIED BY '[INSERT_PASSWORD_HERE]';
+    GRANT ALL PRIVILEGES on divvykeys.* to 'divvy'@'<DivvyCloud.ip.range.here>' IDENTIFIED BY '[INSERT_PASSWORD_HERE]';
+    GRANT RELOAD ON *.* TO 'divvy'@'<DivvyCloud.ip.range.here>' IDENTIFIED BY 'divvy';
+    FLUSH PRIVILEGES;
+
+    ```
+#### Restore backup to new db server
+
+    Next we use the backup sql file created in the above backup step, and restore it to the new db server
+
+    ```
+    mysql -u [MYSQL_USER] -p -h [MYSQL_IP] divvy < divvy.sql
+    mysql -u [MYSQL_USER] -p -h [MYSQL_IP] divvykeys < divvykeys.sql
+    ```
+
+#### Change configuration
+
+    Next we need to change that tells the containers what db to talk to. This configuration is stored in Kubernetes Secret, and can only be modified via kubectl commands. 
+
+    The easiest way to update the secrets is by using the following command:
+    ```
+    kubectl edit secret divvycloud-secret
+    ```
+
+    You will see a 
+
+
+
+    First, you can view the config secret by running the following commands:
+    ```
+    kubectl get secret divvycloud-secret -o json
+    ```
+
+    This will drop you into your favorit editor (vim/vi/emacs) displaying the following information. Please note that the value of each field is based64 encoded. When updating the fields, *you must update with a base64 encoded string*:
+    
+    ```
+    ---
+    apiVersion: v1
+    data:
+      DIVVY_MYSQL_HOST: VGhlIHNlY3JldCB0byBsaWZlIGlzIGlzIG5vdCBkeWluZyAtR2VvcmdlIENhcmxpbgo=
+      DIVVY_MYSQL_PASSWORD: RXhjdXNlIG1lLCBhcmUgeW91IHRoZSBzaW5naW5nIGJ1c2g/Cg==
+      DIVVY_MYSQL_USER: IFRoZXkncmUgbW92aW5nIGluIGhlcmRzLiBUaGV5IGRvIG1vdmUgaW4gaGVyZHMuCg==
+      DIVVY_SECURE_MYSQL_HOST: V2UgYXJlIFNhbXVyYWkuLi4gdGhlIEtleWJvYXJkIENvd2JveXMuLi4K
+      DIVVY_SECURE_MYSQL_PASSWORD: UmVtZW1iZXIgRGFubnkgLSBUd28gd3JvbmdzIGRvbid0IG1ha2UgYSByaWdodCBidXQgdGhyZWUgcmlnaHRzIG1ha2UgYSBsZWZ0Lgo=
+      DIVVY_SECURE_MYSQL_USER: U3VyZWx5IHlvdSBjYW4ndCBiZSBzZXJpb3VzCg==
+      MYSQL_DATABASE: SSBhbSBzZXJpb3VzLiBBbmQgZG9uJ3QgY2FsbCBtZSBTaGlybGV5Lgo=
+      MYSQL_PASSWORD: IFdvdWxkIHlvdSBsaWtlIGEgbmlnaHRjYXA/Cg==
+      MYSQL_ROOT_PASSWORD: Tm8sIHRoYW5rIHlvdSwgSSBkb24ndCB3ZWFyIHRoZW0uCg==
+      MYSQL_USER: VGhhbmsgeW91Cg==
+    kind: Secret
+    metadata:
+      creationTimestamp: '2018-09-21T17:22:21Z'
+      labels:
+        app.kubernetes.io/name: divvycloud
+      name: divvycloud-secret
+      namespace: default
+      resourceVersion: '10887649'
+      selfLink: "/api/v1/namespaces/default/secrets/divvycloud-secret"
+      uid: e5c46c22-bdc2-11e8-a157-42010af00192
+    type: Opaque
+    ```
+
+
+    | Field                 | Description                        |
+    -------------------------------------------------------------
+    | DIVVY_MYSQL_HOST      | Host / IP address of Db hosting the divvy schema            |
+    | DIVVY_MYSQL_USER      | MySQL User for the 'divvy' schema  |
+    | DIVVY_MYSQL_PASSWORD  | Password for DIVVY_MYSQL_USER      |
+    | DIVVY_SECURE_MYSQL_HOST | Host / IP Address of Db hosting the divvykeys schema |
+    | DIVVY_SECURE_MYSQL_USER | MySQL User for the 'divvykeys' schema |
+    | DIVVY_SECURE_MYSQL_PASSWORD | Password for DIVVY_SECURE_MYSQL_USER |
+    | MYSQL_DATABASE          | Not Applicable for remote Db        |
+    | MYSQL_ROOT_USER         | Not Applicable for remote Db        |
+    | MYSQL_ROOT_PASSWORD     | Not Applicable for remote Db        | 
+    | MYSQL_USER              | Not Applicable for remote Db        | 
+
+
+
+
+    
+
+### Setting up 
+
 ## Upgrades
 
  Simply restart all containers , the latest image will pull automatically. Upgrade of database occures on boot.
