@@ -15,7 +15,7 @@ instructions:
 
 ## Acquiring and installing License 
 
-DivvyCloud automatically generates and installs a 14-day trial license.
+DivvyCloud automatically generates and installs a 30-day trial license.
 
 ## Tool dependencies
 
