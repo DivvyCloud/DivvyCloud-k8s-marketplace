@@ -24,6 +24,7 @@ DivvyCloud automatically generates and installs a 30-day trial license.
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/). You can install
   this tool as part of `gcloud`.
 - [make](https://www.gnu.org/software/make/)
+- [helm](https://github.com/helm/helm)
 
 ## Authorization
 
