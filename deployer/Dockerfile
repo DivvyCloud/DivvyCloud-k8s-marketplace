@@ -1,7 +1,7 @@
 FROM launcher.gcr.io/google/debian9 AS build
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gettext
-ADD divvycloud-gke /tmp/chart
+ADD k8s-helm-chart/divvycloud /tmp/chart
 RUN ( cd /tmp && tar -czvf /tmp/divvycloud.tar.gz chart)
 
 ADD apptest/deployer/divvycloud /tmp/test/chart

@@ -33,7 +33,7 @@ app/build:: .build/divvycloud/deployer \
 	@touch "$@"
 
 
-.build/divvycloud/deployer: divvycloud-gke/* divvycloud-gke/templates/* deployer/* .build/marketplace/deployer/helm .build/var/APP_DEPLOYER_IMAGE .build/var/REGISTRY .build/var/TAG | .build/divvycloud
+.build/divvycloud/deployer: k8s-helm-chart/divvycloud/* k8s-helm-chart/divvycloud/templates/* deployer/* .build/marketplace/deployer/helm .build/var/APP_DEPLOYER_IMAGE .build/var/REGISTRY .build/var/TAG | .build/divvycloud
 	$(call print_target, $@)
 	docker build \
 	    --build-arg REGISTRY="$(REGISTRY)" \
